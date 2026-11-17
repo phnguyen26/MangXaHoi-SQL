@@ -38,23 +38,16 @@ CREATE TABLE Album (
     MaAlbum VARCHAR(50) PRIMARY KEY,
     MaNguoiDung VARCHAR(50) NOT NULL,
     TenAlbum VARCHAR(150) NOT NULL,
-<<<<<<< HEAD
     AlbumUrl TEXT NULL,
     NgayTao DATE,
-=======
     NgayTao DATETIME DEFAULT CURRENT_TIMESTAMP,
->>>>>>> main
     CONSTRAINT FK_Album_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE
 );
 
 CREATE TABLE BaiViet (
     MaBaiViet VARCHAR(50) PRIMARY KEY,
     MaNguoiDung VARCHAR(50) NOT NULL,
-<<<<<<< HEAD
-    MaAlbum VARCHAR(50) NULL,
-=======
     MaAlbum VARCHAR(50) NULL,                                              
->>>>>>> main
     NoiDung TEXT NOT NULL,
     TrangThai VARCHAR(20) NOT NULL DEFAULT 'Hien',  -- 'Hien' | 'TamAn' | 'An'
     NgayDang DATETIME DEFAULT CURRENT_TIMESTAMP,
