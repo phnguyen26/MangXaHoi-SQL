@@ -33,9 +33,10 @@ CREATE TABLE TheoDoi (
 
 -- 4. Bảng Album
 CREATE TABLE Album (
-    AlbumUrl VARCHAR(50) PRIMARY KEY,
+    MaAlbum VARCHAR(50) PRIMARY KEY,
     MaNguoiDung VARCHAR(50) NOT NULL,
     TenAlbum VARCHAR(150) NOT NULL,
+    AlbumUrl TEXT NULL,
     NgayTao DATE,
     CONSTRAINT FK_Album_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE
 );
@@ -44,12 +45,12 @@ CREATE TABLE Album (
 CREATE TABLE BaiViet (
     MaBaiViet VARCHAR(50) PRIMARY KEY,
     MaNguoiDung VARCHAR(50) NOT NULL,
-    AlbumUrl VARCHAR(50) NULL,
+    MaAlbum VARCHAR(50) NULL,
     NoiDung TEXT NOT NULL,
     TrangThai VARCHAR(20) DEFAULT 'Hien', -- Sẽ tự động chuyển thành 'TamAn' khi đủ 5 báo cáo[cite: 16]
     NgayDang DATE,
     CONSTRAINT FK_BaiViet_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE,
-    CONSTRAINT FK_BaiViet_Album FOREIGN KEY (AlbumUrl) REFERENCES Album(AlbumUrl) ON DELETE SET NULL
+    CONSTRAINT FK_BaiViet_Album FOREIGN KEY (MaAlbum) REFERENCES Album(MaAlbum) ON DELETE SET NULL
 );
 
 -- 6. Bảng Bình luận đa cấp (Parent-Child Comment)
