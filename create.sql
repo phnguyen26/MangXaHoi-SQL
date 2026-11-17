@@ -79,6 +79,17 @@ CREATE TABLE TuongTac (
     CONSTRAINT UQ_User_BaiViet_TuongTac UNIQUE (MaNguoiDung, MaBaiViet)
 );
 
+CREATE TABLE Chiase (
+    MaChiaSe INT PRIMARY KEY AUTO_INCREMENT,
+    MaNguoiDung VARCHAR(50) NOT NULL,
+    MaBaiViet VARCHAR(50) NOT NULL,
+    NgayChiaSe DATE,
+    CONSTRAINT FK_Chiase_User FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE,
+    CONSTRAINT FK_Chiase_BaiViet FOREIGN KEY (MaBaiViet) REFERENCES BaiViet(MaBaiViet) ON DELETE CASCADE,
+    CONSTRAINT UQ_User_BaiViet_Chiase UNIQUE (MaNguoiDung, MaBaiViet)
+);
+
+
 CREATE TABLE Hashtag (
     MaHashtag INT PRIMARY KEY AUTO_INCREMENT,
     TenHashtag VARCHAR(50) UNIQUE NOT NULL
