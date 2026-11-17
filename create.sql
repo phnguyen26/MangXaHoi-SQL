@@ -27,7 +27,6 @@ CREATE TABLE TheoDoi (
     CONSTRAINT CHK_KhongTuFollow CHECK (MaNguoiDungFollow <> MaNguoiDungBeingFollowed)
 );
 
--- 4. Bảng Album
 CREATE TABLE Album (
     MaAlbum VARCHAR(50) PRIMARY KEY,
     MaNguoiDung VARCHAR(50) NOT NULL,
@@ -52,8 +51,8 @@ CREATE TABLE Media (
     MaBaiViet   VARCHAR(50) NOT NULL,       
     LoaiMedia   VARCHAR(10) NOT NULL,   -- 'ANH' hoặc 'VIDEO'
     Url         VARCHAR(500) NOT NULL,
-    CONSTRAINT FK_Media_BaiViet FOREIGN KEY (MaBaiViet) REFERENCES BaiViet(MaBaiViet) ON DELETE CASCADE,            
-    CONSTRAINT CHK_LoaiMedia    CHECK (LoaiMedia IN ('ANH', 'VIDEO')),
+    CONSTRAINT FK_Media_BaiViet FOREIGN KEY (MaBaiViet) REFERENCES BaiViet(MaBaiViet) ON DELETE CASCADE,
+    CONSTRAINT CHK_LoaiMedia    CHECK (LoaiMedia IN ('ANH', 'VIDEO'))
 );
 
 
