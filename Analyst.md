@@ -1,5 +1,5 @@
 # 1. Phân tích Yêu cầu
-- Nghiệp vụ thực tế:
+Nghiệp vụ thực tế:
 
 + Quản lý tài khoản & Hồ sơ: Quản lý thông tin người dùng và hồ sơ cá nhân tương ứng.   
 
@@ -11,7 +11,7 @@
 
 + Kiểm duyệt nội dung: Cho phép người dùng gửi báo cáo vi phạm và đội ngũ kiểm duyệt xử lý.   
 
-- Quy tắc nghiệp vụ ràng buộc (Business Rules):
+Quy tắc nghiệp vụ ràng buộc (Business Rules):
 
 + Một người dùng không được phép tự theo dõi chính mình.   
 
@@ -21,7 +21,6 @@
 
 # 2. Thiết kế Cơ sở dữ liệu
 Cơ sở dữ liệu được thiết kế đạt chuẩn 3NF (Dạng chuẩn 3) nhằm hạn chế tối đa dư thừa dữ liệu và đảm bảo tính toàn vẹn.   
-
 Các thành phần ràng buộc kỹ thuật:
 
 + Khóa chính (PRIMARY KEY) và Khóa ngoại (FOREIGN KEY): Liên kết chặt chẽ giữa các bảng, kết hợp cơ chế ON DELETE CASCADE để tự động dọn dẹp dữ liệu rác khi xóa thực thể gốc.
@@ -35,28 +34,28 @@ Các thành phần ràng buộc kỹ thuật:
 # 3. Mô hình Thực thể Kết hợp (ER Model & Quan hệ giữa các bảng)
 Hệ thống gồm 9 bảng chính với các mối quan hệ cụ thể như sau:
 
-- Quan hệ 1 - 1 (One-to-One):
+Quan hệ 1 - 1 (One-to-One):
 
-NguoiDung <-> HoSoCaNhan: Mỗi người dùng có đúng một hồ sơ cá nhân chi tiết.
+- NguoiDung <-> HoSoCaNhan: Mỗi người dùng có đúng một hồ sơ cá nhân chi tiết.
 
-- Quan hệ 1 - N (One-to-Many):
+Quan hệ 1 - N (One-to-Many):
 
-Album --> NguoiDung: Một album chỉ được sở hữu bởi 1 người, một người dùng có thể tạo nhiều album.
+- Album --> NguoiDung: Một album chỉ được sở hữu bởi 1 người, một người dùng có thể tạo nhiều album.
 
-BaiViet --> NguoiDung: Một người dùng có thể đăng nhiều bài viết, một bài viết do đúng 1 người đăng.
+- BaiViet --> NguoiDung: Một người dùng có thể đăng nhiều bài viết, một bài viết do đúng 1 người đăng.
 
-BaiViet --> Album: Một album có thể chứa nhiều bài viết.
+- BaiViet --> Album: Một album có thể chứa nhiều bài viết.
 
-TuongTac --> BaiViet: Một bài viết có nhiều lượt tương tác.
+- TuongTac --> BaiViet: Một bài viết có nhiều lượt tương tác.
 
-KiemDuyetBaoCao --> BaiViet: Một bài viết có thể nhận nhiều báo cáo vi phạm.
+- KiemDuyetBaoCao --> BaiViet: Một bài viết có thể nhận nhiều báo cáo vi phạm.
 
-- Quan hệ Tự tham chiếu / Đệ quy (Self-Referencing):
+Quan hệ Tự tham chiếu / Đệ quy (Self-Referencing):
 
-BinhLuan - BinhLuan | BinhLuan <-- BinhLuanCha: Quản lý bình luận đa cấp thông qua cột MaBinhLuanCha (bình luận gốc có NULL, các trả lời cấp con sẽ trỏ về khóa chính của bình luận cha).
+- BinhLuan - BinhLuan | BinhLuan <-- BinhLuanCha: Quản lý bình luận đa cấp thông qua cột MaBinhLuanCha (bình luận gốc có NULL, các trả lời cấp con sẽ trỏ về khóa chính của bình luận cha).
 
-- Quan hệ N - N (Many-to-Many):
+Quan hệ N - N (Many-to-Many):
 
-NguoiDung --- NguoiDung (thông qua bảng trung gian TheoDoi): Quản lý danh sách người theo dõi và được theo dõi.   
+- NguoiDung --- NguoiDung (thông qua bảng trung gian TheoDoi): Quản lý danh sách người theo dõi và được theo dõi.   
 
-BaiViet --- Hashtag (thông qua bảng trung gian BaiViet_Hashtag): Một bài viết có nhiều hashtag và một hashtag xuất hiện ở nhiều bài viết.
+- BaiViet --- Hashtag (thông qua bảng trung gian BaiViet_Hashtag): Một bài viết có nhiều hashtag và một hashtag xuất hiện ở nhiều bài viết.
