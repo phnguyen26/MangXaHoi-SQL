@@ -1,8 +1,6 @@
--- Tạo và sử dụng database
-CREATE DATABASE chude14 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE chude14;
+CREATE DATABASE CHUDE14 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE CHUDE14;
 
--- 1. Bảng Người dùng
 CREATE TABLE NguoiDung (
     MaNguoiDung VARCHAR(50) PRIMARY KEY,
     TenDangNhap VARCHAR(50) NOT NULL UNIQUE,
@@ -11,7 +9,6 @@ CREATE TABLE NguoiDung (
     NgayTao DATE
 );
 
--- 2. Bảng Hồ sơ cá nhân (Quan hệ 1-1 với NguoiDung)
 CREATE TABLE HoSoCaNhan (
     MaNguoiDung VARCHAR(50) PRIMARY KEY,
     TieuSu TEXT,
@@ -20,7 +17,6 @@ CREATE TABLE HoSoCaNhan (
     CONSTRAINT FK_HoSo_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE
 );
 
--- 3. Bảng Theo dõi (Quan hệ N-N đệ quy, có CHECK không tự follow chính mình)
 CREATE TABLE TheoDoi (
     MaNguoiDungFollow VARCHAR(50) NOT NULL,
     MaNguoiDungBeingFollowed VARCHAR(50) NOT NULL,
@@ -33,26 +29,34 @@ CREATE TABLE TheoDoi (
 
 -- 4. Bảng Album
 CREATE TABLE Album (
-    AlbumUrl VARCHAR(50) PRIMARY KEY,
+    MaAlbum VARCHAR(50) PRIMARY KEY,
     MaNguoiDung VARCHAR(50) NOT NULL,
     TenAlbum VARCHAR(150) NOT NULL,
     NgayTao DATE,
     CONSTRAINT FK_Album_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE
 );
 
--- 5. Bảng Bài viết
 CREATE TABLE BaiViet (
     MaBaiViet VARCHAR(50) PRIMARY KEY,
     MaNguoiDung VARCHAR(50) NOT NULL,
-    AlbumUrl VARCHAR(50) NULL,
+    MaAlbum VARCHAR(50) NULL,                                              
     NoiDung TEXT NOT NULL,
-    TrangThai VARCHAR(20) DEFAULT 'Hien', -- Sẽ tự động chuyển thành 'TamAn' khi đủ 5 báo cáo[cite: 16]
+    TrangThai VARCHAR(20) DEFAULT 'Hien', 
     NgayDang DATE,
     CONSTRAINT FK_BaiViet_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE,
-    CONSTRAINT FK_BaiViet_Album FOREIGN KEY (AlbumUrl) REFERENCES Album(AlbumUrl) ON DELETE SET NULL
+    CONSTRAINT FK_BaiViet_Album FOREIGN KEY (MaAlbum) REFERENCES Album(MaAlbum) ON DELETE SET NULL
 );
 
--- 6. Bảng Bình luận đa cấp (Parent-Child Comment)
+CREATE TABLE Media (
+    MaMedia     INT PRIMARY KEY AUTO_INCREMENT,                                                                     
+    MaBaiViet   VARCHAR(50) NOT NULL,       
+    LoaiMedia   VARCHAR(10) NOT NULL,   -- 'ANH' hoặc 'VIDEO'
+    Url         VARCHAR(500) NOT NULL,
+    CONSTRAINT FK_Media_BaiViet FOREIGN KEY (MaBaiViet) REFERENCES BaiViet(MaBaiViet) ON DELETE CASCADE,            
+    CONSTRAINT CHK_LoaiMedia    CHECK (LoaiMedia IN ('ANH', 'VIDEO')),
+);
+
+
 CREATE TABLE BinhLuan (
     MaBinhLuan INT PRIMARY KEY AUTO_INCREMENT,
     MaBaiViet VARCHAR(50) NOT NULL,
@@ -65,7 +69,6 @@ CREATE TABLE BinhLuan (
     CONSTRAINT FK_Comment_Cha FOREIGN KEY (MaBinhLuanCha) REFERENCES BinhLuan(MaBinhLuan) ON DELETE CASCADE
 );
 
--- 7. Bảng Tương tác / Reaction (UNIQUE đảm bảo mỗi người chỉ like 1 lần/bài)
 CREATE TABLE TuongTac (
     MaTuongTac INT PRIMARY KEY AUTO_INCREMENT,
     MaNguoiDung VARCHAR(50) NOT NULL,
@@ -77,7 +80,6 @@ CREATE TABLE TuongTac (
     CONSTRAINT UQ_User_BaiViet_TuongTac UNIQUE (MaNguoiDung, MaBaiViet)
 );
 
--- 8. Bảng Hashtag & Bảng trung gian Bài viết - Hashtag
 CREATE TABLE Hashtag (
     MaHashtag INT PRIMARY KEY AUTO_INCREMENT,
     TenHashtag VARCHAR(50) UNIQUE NOT NULL
@@ -91,7 +93,6 @@ CREATE TABLE BaiViet_Hashtag (
     CONSTRAINT FK_BV_Hashtag_HT FOREIGN KEY (MaHashtag) REFERENCES Hashtag(MaHashtag) ON DELETE CASCADE
 );
 
--- 9. Bảng Kiểm duyệt báo cáo vi phạm
 CREATE TABLE KiemDuyetBaoCao (
     MaBaoCao INT PRIMARY KEY AUTO_INCREMENT,
     MaBaiViet VARCHAR(50) NOT NULL,
@@ -105,9 +106,6 @@ CREATE TABLE KiemDuyetBaoCao (
 );
 
 
--- =============================================
--- TRIGGER: Tự động đổi trạng thái bài viết sang 'TamAn' khi có >= 5 báo cáo từ người dùng khác nhau
--- =============================================
 DELIMITER $$
 
 CREATE TRIGGER TRG_TuDongTamAnBaiViet
