@@ -74,3 +74,84 @@ and tmp2.AVGLikePerPost < 0.5/100 * Followers;
 ![](results/4.png)
 
 
+## 5
+
+select ND.MaNguoiDung, count(*)
+from NguoiDung ND
+left join BaiViet BV on BV.MaNguoiDung = ND.MaNguoiDung
+group by ND.MaNguoiDung;
+
+
+## 6
+
+
+SELECT
+    ND.MaNguoiDung,
+    ND.TenDangNhap
+FROM NguoiDung ND
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM TuongTac  TT
+    INNER JOIN BaiViet AS BV
+    ON BV.MaBaiViet = BV.MaBaiViet
+    INNER JOIN NguoiDung AS tacGia
+    ON tacGia.MaNguoiDung = BV.MaNguoiDung
+    WHERE TT.MaNguoiDung = ND.MaNguoiDung
+    AND tacGia.TenDangNhap = 'KOL_A'
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM BinhLuan AS BL
+    INNER JOIN BaiViet AS BV
+        ON BV.MaBaiViet = BL.MaBaiViet
+    INNER JOIN NguoiDung AS tacGia
+        ON tacGia.MaNguoiDung = BV.MaNguoiDung
+    WHERE BL.MaNguoiDung = ND.MaNguoiDung
+      AND tacGia.TenDangNhap = 'KOL_A'
+)
+ORDER BY ND.MaNguoiDung;
+
+
+## 7
+
+WITH RECURSIVE TREE AS (
+    Select
+        BL.MaBaiViet,
+        BL.MaNguoiDung,
+        BL.MaBinhLuan,
+        BL.MaBinhLuanCha,
+        BL.NoiDung,
+        BL.NgayBinhLuan,
+        0 AS CapDo,
+        CAST(BL.MaBinhLuan AS CHAR(100)) AS DuongDan
+    FROM BinhLuan AS BL
+    WHERE BL.MaBaiViet = 'BV101'
+    AND BL.MaBinhLuanCha IS NULL
+
+    UNION ALL
+
+    SELECT
+        BL.MaBaiViet,
+        BL.MaNguoiDung,
+        BL.MaBinhLuan,
+        BL.MaBinhLuanCha,
+        BL.NoiDung,
+        BL.NgayBinhLuan,
+        TREE.CapDo + 1,
+        CONCAT(TREE.DuongDan, '/', BL.MaBinhLuan)
+    FROM BinhLuan AS BL
+    INNER JOIN TREE 
+        ON BL.MaBinhLuanCha = TREE.MaBinhLuan
+)
+SELECT
+    TREE.MaBinhLuan,
+    TREE.MaNguoiDung,
+    ND.TenDangNhap,
+    TREE.MaBinhLuanCha,
+    TREE.CapDo,
+    CONCAT(REPEAT('— ', TREE.CapDo), TREE.NoiDung) AS NoiDung,
+    TREE.NgayBinhLuan
+FROM TREE
+INNER JOIN NguoiDung AS ND
+    ON ND.MaNguoiDung = TREE.MaNguoiDung
+ORDER BY TREE.DuongDan;
