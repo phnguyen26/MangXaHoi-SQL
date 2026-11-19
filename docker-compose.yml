@@ -6,7 +6,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 53443
       MYSQL_DATABASE: CHUDE14
-      MYSQL_USER: root
+      MYSQL_USER: dev
 
       MYSQL_PASSWORD: 53443
     ports:
@@ -14,7 +14,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password_123"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password_123" ]
       interval: 10s
       timeout: 5s
       retries: 5
