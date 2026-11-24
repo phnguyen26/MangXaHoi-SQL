@@ -12,6 +12,7 @@
     - [5. Outer Join: Liệt kê tất cả người dùng và số bài viết họ đã đăng (bao gồm cả người dùng chưa từng đăng bài).](#5-outer-join-liệt-kê-tất-cả-người-dùng-và-số-bài-viết-họ-đã-đăng-bao-gồm-cả-người-dùng-chưa-từng-đăng-bài)
     - [6. Subquery với NOT EXISTS: Tìm những người dùng chưa từng tương tác (Like/Comment) với bất kỳ bài viết nào của người dùng "KOL\_A".](#6-subquery-với-not-exists-tìm-những-người-dùng-chưa-từng-tương-tác-likecomment-với-bất-kỳ-bài-viết-nào-của-người-dùng-kol_a)
     - [7. Recursive CTE: Truy vấn toàn bộ luồng bình luận (Comment tree - bao gồm các reply cấp 1, cấp 2, cấp 3) của bài viết BV101.](#7-recursive-cte-truy-vấn-toàn-bộ-luồng-bình-luận-comment-tree---bao-gồm-các-reply-cấp-1-cấp-2-cấp-3-của-bài-viết-bv101)
+    - [8. Window Functions: Xếp hạng top 3 bài viết có lượng tương tác cao nhất mỗi ngày bằng ROW\_NUMBER() OVER(PARTITION BY NgayDang ORDER BY TongTuongTac DESC).](#8-window-functions-xếp-hạng-top-3-bài-viết-có-lượng-tương-tác-cao-nhất-mỗi-ngày-bằng-row_number-overpartition-by-ngaydang-order-by-tongtuongtac-desc)
 # 1. Phân tích Yêu cầu
 Nghiệp vụ thực tế:
 
@@ -295,3 +296,39 @@ ON ND.MaNguoiDung = TREE.MaNguoiDung
 ORDER BY TREE.DuongDan;
 ```
 ![](results/7.png)
+
+### 8. Window Functions: Xếp hạng top 3 bài viết có lượng tương tác cao nhất mỗi ngày bằng ROW_NUMBER() OVER(PARTITION BY NgayDang ORDER BY TongTuongTac DESC).
+```sql
+WITH ThongKeBaiViet AS (
+    SELECT 
+        bv.MaBaiViet, 
+        bv.NgayDang, 
+        SUM(tmp.isLike) AS tongLike, 
+        SUM(tmp.isComment) AS tongComment, 
+        (SUM(tmp.isLike) + SUM(tmp.isComment)) AS tong,
+        ROW_NUMBER() OVER (
+            PARTITION BY DATE(bv.NgayDang) 
+            ORDER BY (SUM(tmp.isLike) + SUM(tmp.isComment)) DESC
+        ) AS xepHang
+    FROM BaiViet bv
+    JOIN (
+        SELECT tt.MaBaiViet, 1 AS isLike, 0 AS isComment
+        FROM TuongTac tt
+        UNION ALL
+        SELECT bl.MaBaiViet, 0 AS isLike, 1 AS isComment
+        FROM BinhLuan bl
+    ) tmp ON bv.MaBaiViet = tmp.MaBaiViet
+    GROUP BY bv.MaBaiViet, bv.NgayDang  -- Nên thêm bv.NgayDang vào GROUP BY để đúng chuẩn SQL
+)
+SELECT 
+    MaBaiViet, 
+    NgayDang, 
+    tongLike, 
+    tongComment, 
+    tong, 
+    xepHang
+FROM ThongKeBaiViet
+WHERE xepHang <= 3;
+```
+
+![results/8.png](results/8.png)
