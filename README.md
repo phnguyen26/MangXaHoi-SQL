@@ -318,7 +318,7 @@ WITH ThongKeBaiViet AS (
         SELECT bl.MaBaiViet, 0 AS isLike, 1 AS isComment
         FROM BinhLuan bl
     ) tmp ON bv.MaBaiViet = tmp.MaBaiViet
-    GROUP BY bv.MaBaiViet, bv.NgayDang  -- Nên thêm bv.NgayDang vào GROUP BY để đúng chuẩn SQL
+    GROUP BY bv.MaBaiViet, bv.NgayDang  
 )
 SELECT 
     MaBaiViet, 
