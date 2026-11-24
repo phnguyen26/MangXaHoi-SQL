@@ -2,7 +2,7 @@ CREATE DATABASE CHUDE14 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE CHUDE14;
 
 CREATE TABLE NguoiDung (
-    MaNguoiDung INT AUTO_INCREMENT PRIMARY KEY,
+    MaNguoiDung VARCHAR(36) PRIMARY KEY,
     TenDangNhap VARCHAR(50) NOT NULL UNIQUE,
     Email       VARCHAR(100) NOT NULL UNIQUE,
     MatKhau     VARCHAR(200) NOT NULL,
@@ -10,14 +10,14 @@ CREATE TABLE NguoiDung (
 );
 
 CREATE TABLE KiemDuyetVien (
-    MaNguoiDung INT PRIMARY KEY,
+    MaNguoiDung VARCHAR(36) PRIMARY KEY,
     CapBac      VARCHAR(50) DEFAULT 'KiemDuyetVien',
     NgayBoNhiem DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT FK_KDV_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE
 );
 
 CREATE TABLE HoSoCaNhan (
-    MaNguoiDung INT PRIMARY KEY,
+    MaNguoiDung VARCHAR(36) PRIMARY KEY,
     TieuSu      TEXT,
     AnhDaiDien  VARCHAR(200),
     NgaySinh    DATE,
@@ -25,27 +25,28 @@ CREATE TABLE HoSoCaNhan (
 );
 
 CREATE TABLE TheoDoi (
-    MaNguoiDungFollow        INT NOT NULL,
-    MaNguoiDungBeingFollowed INT NOT NULL,
+    MaNguoiDungFollow        VARCHAR(36) NOT NULL,
+    MaNguoiDungBeingFollowed VARCHAR(36) NOT NULL,
     NgayTheoDoi              DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (MaNguoiDungFollow, MaNguoiDungBeingFollowed),
     CONSTRAINT FK_Follow_NguoiDung FOREIGN KEY (MaNguoiDungFollow) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE,
     CONSTRAINT FK_Follow_BiFollow FOREIGN KEY (MaNguoiDungBeingFollowed) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE,
-    CONSTRAINT CHK_KhongTuFollow CHECK (MaNguoiDungFollow <> MaNguoiDungBeingFollowed)
+    CONSTRAINT CHK_KhongTuFollow CHECK (MaNguoiDungFollow <> MaNguoiDungBeingFollowed) -- A & B , B & A cũng được chấp nhận
+
 );
 
 CREATE TABLE Album (
-    MaAlbum     INT AUTO_INCREMENT PRIMARY KEY,
-    MaNguoiDung INT NOT NULL,
+    MaAlbum     VARCHAR(36) PRIMARY KEY,
+    MaNguoiDung VARCHAR(36) NOT NULL,
     TenAlbum    VARCHAR(50) NOT NULL,
     NgayTao     DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT FK_Album_NguoiDung FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE
 );
 
 CREATE TABLE BaiViet (
-    MaBaiViet   INT AUTO_INCREMENT PRIMARY KEY,
-    MaNguoiDung INT NOT NULL,
-    MaAlbum     INT NULL,                                              
+    MaBaiViet   VARCHAR(36) PRIMARY KEY,
+    MaNguoiDung VARCHAR(36) NOT NULL,
+    MaAlbum     VARCHAR(36) NULL,                                              
     NoiDung     TEXT NOT NULL,
     TrangThai   VARCHAR(20) NOT NULL DEFAULT 'TamAn',  -- 'TamAn' (chờ duyệt / không hiển thị) | 'Hien' (công khai)
     NgayDang    DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -55,8 +56,8 @@ CREATE TABLE BaiViet (
 );
 
 CREATE TABLE Media (
-    MaMedia     INT AUTO_INCREMENT PRIMARY KEY,                                                                     
-    MaBaiViet   INT NOT NULL,       
+    MaMedia     VARCHAR(36) PRIMARY KEY,                                                                     
+    MaBaiViet   VARCHAR(36) NOT NULL,       
     LoaiMedia   VARCHAR(10) NOT NULL,   -- 'ANH' hoặc 'VIDEO'
     Url         VARCHAR(500) NOT NULL,
     CONSTRAINT FK_Media_BaiViet FOREIGN KEY (MaBaiViet) REFERENCES BaiViet(MaBaiViet) ON DELETE CASCADE,
@@ -65,10 +66,10 @@ CREATE TABLE Media (
 
 
 CREATE TABLE BinhLuan (
-    MaBinhLuan    INT AUTO_INCREMENT PRIMARY KEY,
-    MaBaiViet     INT NOT NULL,
-    MaNguoiDung   INT NOT NULL,
-    MaBinhLuanCha INT NULL,
+    MaBinhLuan    VARCHAR(36) PRIMARY KEY,
+    MaBaiViet     VARCHAR(36) NOT NULL,
+    MaNguoiDung   VARCHAR(36) NOT NULL,
+    MaBinhLuanCha VARCHAR(36) NULL,
     NoiDung       TEXT NOT NULL,
     NgayBinhLuan  DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT FK_Comment_BaiViet FOREIGN KEY (MaBaiViet) REFERENCES BaiViet(MaBaiViet) ON DELETE CASCADE,
@@ -79,9 +80,9 @@ CREATE TABLE BinhLuan (
 );
 
 CREATE TABLE TuongTac (
-    MaTuongTac   INT AUTO_INCREMENT PRIMARY KEY,
-    MaNguoiDung  INT NOT NULL,
-    MaBaiViet    INT NOT NULL,
+    MaTuongTac   VARCHAR(36) PRIMARY KEY,
+    MaNguoiDung  VARCHAR(36) NOT NULL,
+    MaBaiViet    VARCHAR(36) NOT NULL,
     LoaiTuongTac VARCHAR(20) NOT NULL DEFAULT 'LIKE',
     NgayTuongTac DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT CHK_LoaiTuongTac CHECK (LoaiTuongTac IN ('LIKE', 'LOVE', 'HAHA', 'WOW', 'SAD', 'ANGRY')),
@@ -91,9 +92,9 @@ CREATE TABLE TuongTac (
 );
 
 CREATE TABLE ChiaSe (
-    MaChiaSe    INT AUTO_INCREMENT PRIMARY KEY,
-    MaNguoiDung INT NOT NULL,
-    MaBaiViet   INT NOT NULL,
+    MaChiaSe    VARCHAR(36) PRIMARY KEY,
+    MaNguoiDung VARCHAR(36) NOT NULL,
+    MaBaiViet   VARCHAR(36) NOT NULL,
     NgayChiaSe  DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT FK_Chiase_User FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung) ON DELETE CASCADE,
     CONSTRAINT FK_Chiase_BaiViet FOREIGN KEY (MaBaiViet) REFERENCES BaiViet(MaBaiViet) ON DELETE CASCADE,
@@ -102,13 +103,13 @@ CREATE TABLE ChiaSe (
 
 
 CREATE TABLE Hashtag (
-    MaHashtag  INT AUTO_INCREMENT PRIMARY KEY,
+    MaHashtag  VARCHAR(36) PRIMARY KEY,
     TenHashtag VARCHAR(50) UNIQUE NOT NULL
 );
 
 CREATE TABLE BaiViet_Hashtag (
-    MaBaiViet INT NOT NULL,
-    MaHashtag INT NOT NULL,
+    MaBaiViet VARCHAR(36) NOT NULL,
+    MaHashtag VARCHAR(36) NOT NULL,
     PRIMARY KEY (MaBaiViet, MaHashtag),
     CONSTRAINT FK_BV_Hashtag_BV FOREIGN KEY (MaBaiViet) REFERENCES BaiViet(MaBaiViet) ON DELETE CASCADE,
     CONSTRAINT FK_BV_Hashtag_HT FOREIGN KEY (MaHashtag) REFERENCES Hashtag(MaHashtag) ON DELETE CASCADE
@@ -116,9 +117,9 @@ CREATE TABLE BaiViet_Hashtag (
 
 -- Mỗi lần kiểm duyệt viên xem xét một bài viết (dành cho KDV)
 CREATE TABLE KiemDuyet (
-    MaKiemDuyet     INT AUTO_INCREMENT PRIMARY KEY,
-    MaBaiViet       INT NOT NULL,
-    MaKiemDuyetVien INT NULL,
+    MaKiemDuyet     VARCHAR(36) PRIMARY KEY,
+    MaBaiViet       VARCHAR(36) NOT NULL,
+    MaKiemDuyetVien VARCHAR(36) NULL,
     KetQua          VARCHAR(20) NOT NULL,   -- 'ViPham' | 'KhongViPham'
     GhiChu          TEXT,
     NgayXuLy        DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -130,10 +131,10 @@ CREATE TABLE KiemDuyet (
 
 -- Báo cáo vi phạm do người dùng gửi (dành cho toàn bộ user)
 CREATE TABLE BaoCao (
-    MaBaoCao           INT AUTO_INCREMENT PRIMARY KEY,
-    MaBaiViet          INT NOT NULL,
-    MaNguoiDungBaoCao  INT NOT NULL,
-    MaKiemDuyet        INT NULL,   -- NULL = chưa được xử lý
+    MaBaoCao           VARCHAR(36) PRIMARY KEY,
+    MaBaiViet          VARCHAR(36) NOT NULL,
+    MaNguoiDungBaoCao  VARCHAR(36) NOT NULL,
+    MaKiemDuyet        VARCHAR(36) NULL,   -- NULL = chưa được xử lý
     LyDo               TEXT,
     NgayBaoCao         DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT FK_BaoCao_BaiViet FOREIGN KEY (MaBaiViet) REFERENCES BaiViet(MaBaiViet) ON DELETE CASCADE,
