@@ -164,7 +164,7 @@ WHERE BL.MaBaiViet = 'BV505';
 
 ### 3. Group By: Thống kê tổng số lượt tương tác (Like + Comment + Share) của từng người dùng trong tuần.
 ```sql
-SELECT ND.MaNguoiDung, COUNT(isLike), COUNT(isComment), COUNT(isShare)
+SELECT ND.MaNguoiDung, SUM(isLike), SUM(isComment), SUM(isShare)
 FROM NguoiDung ND
 JOIN (
 	SELECT MaNguoiDung , 1 AS isLike, 0 AS isComment, 0 AS isShare
