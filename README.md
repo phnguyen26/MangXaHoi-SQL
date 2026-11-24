@@ -1,7 +1,5 @@
 ## Mục lục
 
-## Mục lục
-
 - [1. Phân tích Yêu cầu](#1-phân-tích-yêu-cầu)
 - [2. Thiết kế Cơ sở dữ liệu](#2-thiết-kế-cơ-sở-dữ-liệu)
 - [3. Mô hình Thực thể Kết hợp (ER Model \& Quan hệ giữa các bảng)](#3-mô-hình-thực-thể-kết-hợp-er-model--quan-hệ-giữa-các-bảng)
