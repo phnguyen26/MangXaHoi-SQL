@@ -139,6 +139,25 @@ Quan hệ N - N (Many-to-Many):
 # 4. Sơ đồ thực thể 
 ![](ER_Diagram.png)
 
+LƯỢC ĐỒ QUAN HỆ - CSDL CHUDE14
+PK: khóa chính, FK: khóa ngoại, UQ: duy nhất;
+
+1. NguoiDung(MaNguoiDung PK, TenDangNhap UQ, Email UQ, MatKhau, NgayTao)
+2. HoSoCaNhan(MaNguoiDung PK FK -> NguoiDung, TieuSu, AnhDaiDien, NgaySinh)
+3. KiemDuyetVien(MaNguoiDung PK FK -> NguoiDung, CapBac, NgayBoNhiem)
+4. TheoDoi(MaNguoiDungFollow PK FK -> NguoiDung, MaNguoiDungBeingFollowed PK FK -> NguoiDung, NgayTheoDoi)
+5. Album(MaAlbum PK, MaNguoiDung FK -> NguoiDung, TenAlbum, NgayTao)
+6. BaiViet(MaBaiViet PK, MaNguoiDung FK -> NguoiDung, MaAlbum FK -> Album, NoiDung, TrangThai, NgayDang)
+7. Media(MaMedia PK, MaBaiViet FK -> BaiViet, LoaiMedia, Url)
+8. BinhLuan(MaBinhLuan PK, MaBaiViet FK -> BaiViet, MaNguoiDung FK -> NguoiDung, MaBinhLuanCha FK -> BinhLuan, NoiDung, NgayBinhLuan)
+9. TuongTac(MaTuongTac PK, MaNguoiDung FK -> NguoiDung, MaBaiViet FK -> BaiViet, LoaiTuongTac, NgayTuongTac)
+10. ChiaSe(MaChiaSe PK, MaNguoiDung FK -> NguoiDung, MaBaiViet FK -> BaiViet, NgayChiaSe)
+11. Hashtag(MaHashtag PK, TenHashtag UQ)
+12. BaiViet_Hashtag(MaBaiViet PK FK -> BaiViet, MaHashtag PK FK -> Hashtag)
+13. KiemDuyet(MaKiemDuyet PK, MaBaiViet FK -> BaiViet, MaKiemDuyetVien FK -> KiemDuyetVien, KetQua, GhiChu, NgayXuLy)
+14. BaoCao(MaBaoCao PK, MaBaiViet FK -> BaiViet, MaNguoiDungBaoCao FK -> NguoiDung, MaKiemDuyet FK -> KiemDuyet, LyDo, NgayBaoCao)
+
+
 # 5. Truy vấn
 
 ### 1. Cơ bản: Danh sách bài viết được đăng trong 24 giờ qua có chứa Hashtag \#CongNghe.
